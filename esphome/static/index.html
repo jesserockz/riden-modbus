@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Riden RD60xx Serial Proxy Firmware</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 40rem;
+        margin: 3rem auto;
+        padding: 0 1rem;
+        line-height: 1.5;
+        background: #ffffff;
+        color: #1a1a1a;
+      }
+      a {
+        color: #0055cc;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #121212;
+          color: #e4e4e4;
+        }
+        a {
+          color: #6fa8ff;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Riden RD60xx Serial Proxy Firmware</h1>
+    <p>
+      ESPHome firmware for the ESP8266 module inside a Riden RD60xx power
+      supply. It bridges the supply's Modbus RTU TTL link over the ESPHome
+      native API for use with
+      <a href="https://github.com/jesserockz/riden-modbus">riden-modbus</a>.
+    </p>
+    <p>
+      Connect the module to this computer over USB and click install. After
+      flashing, join the fallback hotspot to provision Wi-Fi; Home Assistant
+      generates an API encryption key when it adopts the device.
+    </p>
+    <esp-web-install-button manifest="firmware/manifest.json"></esp-web-install-button>
+    <script
+      type="module"
+      src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"
+    ></script>
+  </body>
+</html>

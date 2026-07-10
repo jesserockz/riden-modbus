@@ -1,0 +1,55 @@
+name: Firmware
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - esphome/**
+      - .github/workflows/firmware.yml
+  pull_request:
+    paths:
+      - esphome/**
+      - .github/workflows/firmware.yml
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Build firmware
+        id: esphome-build
+        uses: esphome/build-action@4ef4722a2935eac47b7e227fe0e1f8e0f8afcc42 # v7.3.0
+        with:
+          yaml-file: esphome/rd60xx-serial-proxy.yaml
+          complete-manifest: true
+      - name: Assemble site
+        run: |
+          mkdir -p site/firmware
+          mv "${{ steps.esphome-build.outputs.name }}"/* site/firmware/
+          cp esphome/static/index.html site/
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site
+
+  publish:
+    if: github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

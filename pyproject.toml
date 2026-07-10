@@ -1,0 +1,58 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "riden-modbus"
+version = "0.1.0"
+description = "Read and control Riden RD60xx power supplies over Modbus."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Jesse Hills" }]
+keywords = ["modbus", "riden", "rd60xx", "rd6018", "power-supply", "home-assistant"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Home Automation",
+]
+# Protocol + the device-modelling framework (modbus_connection.model). The caller
+# injects a ModbusUnit built from whichever backend they choose.
+dependencies = ["modbus-connection>=3.2,<4"]
+
+[project.optional-dependencies]
+# Concrete backend for the script/query.py CLI (pip install riden-modbus[cli]).
+cli = ["modbus-connection[pymodbus]>=3.2,<4"]
+# ESPHome native-API client for script/esphome_query.py.
+esphome = ["aioesphomeapi>=45"]
+
+[project.urls]
+Homepage = "https://github.com/jesserockz/riden-modbus"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=5",
+    # Tests run against the in-memory mock backend that ships with
+    # modbus-connection (its pytest plugin is auto-registered); no real backend
+    # or server is needed. The pymodbus extra is only imported (never connected)
+    # to exercise the query CLI's backend selection.
+    "modbus-connection[pymodbus]>=3.2,<4",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/riden_modbus"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.coverage.report]
+exclude_also = ["if __name__ == .__main__.:"]
+
+[tool.ruff]
+target-version = "py312"
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]

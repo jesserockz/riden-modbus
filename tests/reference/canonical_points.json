@@ -1,0 +1,648 @@
+{
+  "registers": {
+    "ID": {
+      "id": 0,
+      "name": "ID",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "SN_H": {
+      "id": 1,
+      "name": "SN_H",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "SN_L": {
+      "id": 2,
+      "name": "SN_L",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "FW": {
+      "id": 3,
+      "name": "FW",
+      "scale": 0.01,
+      "access": "ro",
+      "kind": "number"
+    },
+    "INT_C_S": {
+      "id": 4,
+      "name": "INT_C_S",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "INT_C": {
+      "id": 5,
+      "name": "INT_C",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "INT_F_S": {
+      "id": 6,
+      "name": "INT_F_S",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "INT_F": {
+      "id": 7,
+      "name": "INT_F",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "V_SET": {
+      "id": 8,
+      "name": "V_SET",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "I_SET": {
+      "id": 9,
+      "name": "I_SET",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "V_OUT": {
+      "id": 10,
+      "name": "V_OUT",
+      "scale": "voltage",
+      "access": "ro",
+      "kind": "number"
+    },
+    "I_OUT": {
+      "id": 11,
+      "name": "I_OUT",
+      "scale": "current",
+      "access": "ro",
+      "kind": "number"
+    },
+    "P_OUT_H": {
+      "id": 12,
+      "name": "P_OUT_H",
+      "scale": "power",
+      "access": "ro",
+      "kind": "number"
+    },
+    "P_OUT_L": {
+      "id": 13,
+      "name": "P_OUT_L",
+      "scale": "power",
+      "access": "ro",
+      "kind": "number"
+    },
+    "V_IN": {
+      "id": 14,
+      "name": "V_IN",
+      "scale": 0.01,
+      "access": "ro",
+      "kind": "number"
+    },
+    "KEYPAD": {
+      "id": 15,
+      "name": "KEYPAD",
+      "scale": 1,
+      "access": "rw",
+      "kind": "boolean"
+    },
+    "OVP_OCP": {
+      "id": 16,
+      "name": "OVP_OCP",
+      "scale": 1,
+      "access": "ro",
+      "kind": "enum"
+    },
+    "CV_CC": {
+      "id": 17,
+      "name": "CV_CC",
+      "scale": 1,
+      "access": "ro",
+      "kind": "enum"
+    },
+    "OUTPUT": {
+      "id": 18,
+      "name": "OUTPUT",
+      "scale": 1,
+      "access": "rw",
+      "kind": "boolean"
+    },
+    "PRESET": {
+      "id": 19,
+      "name": "PRESET",
+      "scale": 1,
+      "access": "rw",
+      "kind": "number"
+    },
+    "I_RANGE": {
+      "id": 20,
+      "name": "I_RANGE",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "BAT_MODE": {
+      "id": 32,
+      "name": "BAT_MODE",
+      "scale": 1,
+      "access": "ro",
+      "kind": "boolean"
+    },
+    "V_BAT": {
+      "id": 33,
+      "name": "V_BAT",
+      "scale": "voltage",
+      "access": "ro",
+      "kind": "number"
+    },
+    "EXT_C_S": {
+      "id": 34,
+      "name": "EXT_C_S",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "EXT_C": {
+      "id": 35,
+      "name": "EXT_C",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "EXT_F_S": {
+      "id": 36,
+      "name": "EXT_F_S",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "EXT_F": {
+      "id": 37,
+      "name": "EXT_F",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "AH_H": {
+      "id": 38,
+      "name": "AH_H",
+      "scale": 0.001,
+      "access": "ro",
+      "kind": "number"
+    },
+    "AH_L": {
+      "id": 39,
+      "name": "AH_L",
+      "scale": 0.001,
+      "access": "ro",
+      "kind": "number"
+    },
+    "WH_H": {
+      "id": 40,
+      "name": "WH_H",
+      "scale": 0.001,
+      "access": "ro",
+      "kind": "number"
+    },
+    "WH_L": {
+      "id": 41,
+      "name": "WH_L",
+      "scale": 0.001,
+      "access": "ro",
+      "kind": "number"
+    },
+    "YEAR": {
+      "id": 48,
+      "name": "YEAR",
+      "scale": 1,
+      "access": "rw",
+      "kind": "number"
+    },
+    "MONTH": {
+      "id": 49,
+      "name": "MONTH",
+      "scale": 1,
+      "access": "rw",
+      "kind": "number"
+    },
+    "DAY": {
+      "id": 50,
+      "name": "DAY",
+      "scale": 1,
+      "access": "rw",
+      "kind": "number"
+    },
+    "HOUR": {
+      "id": 51,
+      "name": "HOUR",
+      "scale": 1,
+      "access": "rw",
+      "kind": "number"
+    },
+    "MINUTE": {
+      "id": 52,
+      "name": "MINUTE",
+      "scale": 1,
+      "access": "rw",
+      "kind": "number"
+    },
+    "SECOND": {
+      "id": 53,
+      "name": "SECOND",
+      "scale": 1,
+      "access": "rw",
+      "kind": "number"
+    },
+    "V_OUT_ZERO": {
+      "id": 55,
+      "name": "V_OUT_ZERO",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "V_OUT_SCALE": {
+      "id": 56,
+      "name": "V_OUT_SCALE",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "V_BACK_ZERO": {
+      "id": 57,
+      "name": "V_BACK_ZERO",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "V_BACK_SCALE": {
+      "id": 58,
+      "name": "V_BACK_SCALE",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "I_OUT_ZERO": {
+      "id": 59,
+      "name": "I_OUT_ZERO",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "I_OUT_SCALE": {
+      "id": 60,
+      "name": "I_OUT_SCALE",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "I_BACK_ZERO": {
+      "id": 61,
+      "name": "I_BACK_ZERO",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "I_BACK_SCALE": {
+      "id": 62,
+      "name": "I_BACK_SCALE",
+      "scale": 1,
+      "access": "ro",
+      "kind": "number"
+    },
+    "OPT_TAKE_OK": {
+      "id": 66,
+      "name": "OPT_TAKE_OK",
+      "scale": 1,
+      "access": "rw",
+      "kind": "boolean"
+    },
+    "OPT_TAKE_OUT": {
+      "id": 67,
+      "name": "OPT_TAKE_OUT",
+      "scale": 1,
+      "access": "rw",
+      "kind": "boolean"
+    },
+    "OPT_BOOT_POW": {
+      "id": 68,
+      "name": "OPT_BOOT_POW",
+      "scale": 1,
+      "access": "rw",
+      "kind": "boolean"
+    },
+    "OPT_BUZZ": {
+      "id": 69,
+      "name": "OPT_BUZZ",
+      "scale": 1,
+      "access": "rw",
+      "kind": "boolean"
+    },
+    "OPT_LOGO": {
+      "id": 70,
+      "name": "OPT_LOGO",
+      "scale": 1,
+      "access": "rw",
+      "kind": "boolean"
+    },
+    "OPT_LANG": {
+      "id": 71,
+      "name": "OPT_LANG",
+      "scale": 1,
+      "access": "rw",
+      "kind": "enum"
+    },
+    "OPT_LIGHT": {
+      "id": 72,
+      "name": "OPT_LIGHT",
+      "scale": 1,
+      "access": "rw",
+      "kind": "number"
+    },
+    "M0_V": {
+      "id": 80,
+      "name": "M0_V",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M0_I": {
+      "id": 81,
+      "name": "M0_I",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M0_OVP": {
+      "id": 82,
+      "name": "M0_OVP",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M0_OCP": {
+      "id": 83,
+      "name": "M0_OCP",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M1_V": {
+      "id": 84,
+      "name": "M1_V",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M1_I": {
+      "id": 85,
+      "name": "M1_I",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M1_OVP": {
+      "id": 86,
+      "name": "M1_OVP",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M1_OCP": {
+      "id": 87,
+      "name": "M1_OCP",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M2_V": {
+      "id": 88,
+      "name": "M2_V",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M2_I": {
+      "id": 89,
+      "name": "M2_I",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M2_OVP": {
+      "id": 90,
+      "name": "M2_OVP",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M2_OCP": {
+      "id": 91,
+      "name": "M2_OCP",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M3_V": {
+      "id": 92,
+      "name": "M3_V",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M3_I": {
+      "id": 93,
+      "name": "M3_I",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M3_OVP": {
+      "id": 94,
+      "name": "M3_OVP",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M3_OCP": {
+      "id": 95,
+      "name": "M3_OCP",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M4_V": {
+      "id": 96,
+      "name": "M4_V",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M4_I": {
+      "id": 97,
+      "name": "M4_I",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M4_OVP": {
+      "id": 98,
+      "name": "M4_OVP",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M4_OCP": {
+      "id": 99,
+      "name": "M4_OCP",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M5_V": {
+      "id": 100,
+      "name": "M5_V",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M5_I": {
+      "id": 101,
+      "name": "M5_I",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M5_OVP": {
+      "id": 102,
+      "name": "M5_OVP",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M5_OCP": {
+      "id": 103,
+      "name": "M5_OCP",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M6_V": {
+      "id": 104,
+      "name": "M6_V",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M6_I": {
+      "id": 105,
+      "name": "M6_I",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M6_OVP": {
+      "id": 106,
+      "name": "M6_OVP",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M6_OCP": {
+      "id": 107,
+      "name": "M6_OCP",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M7_V": {
+      "id": 108,
+      "name": "M7_V",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M7_I": {
+      "id": 109,
+      "name": "M7_I",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M7_OVP": {
+      "id": 110,
+      "name": "M7_OVP",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M7_OCP": {
+      "id": 111,
+      "name": "M7_OCP",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M8_V": {
+      "id": 112,
+      "name": "M8_V",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M8_I": {
+      "id": 113,
+      "name": "M8_I",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M8_OVP": {
+      "id": 114,
+      "name": "M8_OVP",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M8_OCP": {
+      "id": 115,
+      "name": "M8_OCP",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M9_V": {
+      "id": 116,
+      "name": "M9_V",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M9_I": {
+      "id": 117,
+      "name": "M9_I",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M9_OVP": {
+      "id": 118,
+      "name": "M9_OVP",
+      "scale": "voltage",
+      "access": "rw",
+      "kind": "number"
+    },
+    "M9_OCP": {
+      "id": 119,
+      "name": "M9_OCP",
+      "scale": "current",
+      "access": "rw",
+      "kind": "number"
+    }
+  }
+}

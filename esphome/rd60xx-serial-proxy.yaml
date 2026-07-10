@@ -1,0 +1,56 @@
+---
+# Firmware for the ESP8266 module inside a Riden RD60xx power supply.
+#
+# Exposes the supply's Modbus RTU TTL link through ESPHome's serial_proxy
+# component, so the ESP is a transparent bridge: Home Assistant (or anything
+# that can open the proxied port) drives the supply directly with this
+# library.
+#
+# This is a distributable firmware: it contains no credentials. Wi-Fi is
+# provisioned through the fallback hotspot's captive portal, and the API
+# starts keyless so Home Assistant generates and stores an encryption key
+# when it adopts the device.
+
+esphome:
+  name: rd60xx
+  friendly_name: RD60xx
+  name_add_mac_suffix: true
+  project:
+    name: jesserockz.rd60xx-serial-proxy
+    version: "1.0.0"
+
+esp8266:
+  board: esp12e
+
+dashboard_import:
+  package_import_url: github://jesserockz/riden-modbus/esphome/rd60xx-serial-proxy.yaml@main
+
+wifi:
+  ap: {}
+
+captive_portal:
+
+api:
+  encryption: {}
+
+ota:
+  - platform: esphome
+
+# UART0 is wired to the supply's TTL header, so hardware logging must stay off.
+logger:
+  baud_rate: 0
+
+uart:
+  id: rd60xx_uart
+  tx_pin: GPIO1
+  rx_pin: GPIO3
+  baud_rate: 115200
+  # A full-map Modbus response (120 registers) is ~245 bytes — too close to
+  # the 256-byte default to survive a busy main loop.
+  rx_buffer_size: 512
+
+serial_proxy:
+  - id: rd60xx_serial
+    uart_id: rd60xx_uart
+    name: RD60xx Serial
+    port_type: TTL
