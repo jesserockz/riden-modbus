@@ -30,7 +30,6 @@ class OptionMetadata:
     key: str
     value: int
     label: str | None = None
-    description: str | None = None
 
 
 @dataclass(frozen=True)
@@ -56,9 +55,6 @@ class DatapointMetadata:
     """Neutral metadata for one Riden datapoint."""
 
     value_kind: ValueKind
-    maker_reference: int | None = None
-    maker_key: str | None = None
-    description: str | None = None
     writable: bool = False
     number: NumberMetadata | None = None
     enum: EnumMetadata | None = None

@@ -22,9 +22,16 @@ class Preset(RidenComponent):
 
     # Model-scaled fields, declared on the subclass preset_class() builds.
     voltage: float | None
+    """Preset output voltage (V)."""
+
     current: float | None
+    """Preset output current limit (A)."""
+
     over_voltage_protection: float | None
+    """Preset over-voltage protection (V)."""
+
     over_current_protection: float | None
+    """Preset over-current protection (A)."""
 
     @property
     def number(self) -> int:
@@ -48,8 +55,6 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             min_value=0,
             max_value=profile.max_voltage,
             digits=2,
-            maker_key="M_V",
-            description="Preset output voltage",
         )
 
         current = gauge(
@@ -62,8 +67,6 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             min_value=0,
             max_value=profile.max_current,
             digits=2,
-            maker_key="M_I",
-            description="Preset output current limit",
         )
 
         over_voltage_protection = gauge(
@@ -76,8 +79,6 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             min_value=0,
             max_value=profile.max_voltage,
             digits=2,
-            maker_key="M_OVP",
-            description="Preset over-voltage protection",
         )
 
         over_current_protection = gauge(
@@ -90,8 +91,6 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             min_value=0,
             max_value=profile.max_current,
             digits=2,
-            maker_key="M_OCP",
-            description="Preset over-current protection",
         )
 
     return _Preset

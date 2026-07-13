@@ -19,19 +19,20 @@ class Battery(RidenComponent):
 
     # Model-scaled field, declared on the subclass battery_class() builds.
     voltage: float | None
+    """Battery voltage (V)."""
 
-    active = boolean(
-        32,
-        maker_key="BAT_MODE",
-        description="Battery connected to the rear charging terminals",
-    )
+    active = boolean(32)
+    """True while a battery is connected to the rear charging terminals."""
 
-    charge = uint32(38, scale=0.001, unit="Ah", digits=3, maker_key="AH")
-    energy = uint32(40, scale=0.001, unit="Wh", digits=3, maker_key="WH")
+    charge = uint32(38, scale=0.001, unit="Ah", digits=3)
+    """Accumulated charge this session (Ah)."""
+
+    energy = uint32(40, scale=0.001, unit="Wh", digits=3)
+    """Accumulated energy this session (Wh)."""
 
     # Sign lives in its own register: 0 = positive, 1 = negative.
-    _temperature_sign = raw_register(34, maker_key="EXT_C_S")
-    _temperature_value = integer(35, signed=False, maker_key="EXT_C")
+    _temperature_sign = raw_register(34)
+    _temperature_value = integer(35, signed=False)
 
     @property
     def temperature(self) -> int | None:
@@ -54,7 +55,6 @@ def battery_class(profile: ModelProfile) -> type[Battery]:
             signed=False,
             unit="V",
             digits=2,
-            maker_key="V_BAT",
         )
 
     return _Battery

@@ -82,22 +82,16 @@ def _with_number_validator(
 
 
 def _number_metadata(
-    address: int,
     *,
     min_value: float | int | None,
     max_value: float | int | None,
     step: float | int | None,
     digits: int | None,
     unit: str | None,
-    maker_key: str | None,
-    description: str | None,
     writable: bool | Callable[[Any], Any],
 ) -> DatapointMetadata:
     return DatapointMetadata(
         value_kind="number",
-        maker_reference=address,
-        maker_key=maker_key,
-        description=description,
         writable=bool(writable),
         number=NumberMetadata(
             min_value=min_value,
@@ -112,8 +106,6 @@ def _number_metadata(
 def raw_register(
     address: int,
     *args: Any,
-    maker_key: str | None = None,
-    description: str | None = None,
     writable: bool | Callable[[Any], Any] = False,
     **kwargs: Any,
 ):
@@ -129,9 +121,6 @@ def raw_register(
         field,
         DatapointMetadata(
             value_kind="raw",
-            maker_reference=address,
-            maker_key=maker_key,
-            description=description,
             writable=bool(writable),
         ),
     )
@@ -145,8 +134,6 @@ def integer(
     step: float | int | None = None,
     digits: int | None = None,
     unit: str | None = None,
-    maker_key: str | None = None,
-    description: str | None = None,
     writable: bool | Callable[[Any], Any] = False,
     **kwargs: Any,
 ):
@@ -169,14 +156,11 @@ def integer(
     return attach_metadata(
         field,
         _number_metadata(
-            address,
             min_value=min_value,
             max_value=max_value,
             step=effective_step,
             digits=digits,
             unit=unit,
-            maker_key=maker_key,
-            description=description,
             writable=writable,
         ),
     )
@@ -191,8 +175,6 @@ def gauge(
     step: float | int | None = None,
     digits: int | None = None,
     unit: str | None = None,
-    maker_key: str | None = None,
-    description: str | None = None,
     writable: bool | Callable[[Any], Any] = False,
     **kwargs: Any,
 ):
@@ -216,14 +198,11 @@ def gauge(
     return attach_metadata(
         field,
         _number_metadata(
-            address,
             min_value=min_value,
             max_value=max_value,
             step=effective_step,
             digits=digits,
             unit=unit,
-            maker_key=maker_key,
-            description=description,
             writable=writable,
         ),
     )
@@ -234,8 +213,6 @@ def uint32(
     *args: Any,
     digits: int | None = None,
     unit: str | None = None,
-    maker_key: str | None = None,
-    description: str | None = None,
     **kwargs: Any,
 ):
     """Create a read-only 32-bit field with Riden metadata."""
@@ -249,14 +226,11 @@ def uint32(
     return attach_metadata(
         field,
         _number_metadata(
-            address,
             min_value=None,
             max_value=None,
             step=step_from_digits(digits),
             digits=digits,
             unit=unit,
-            maker_key=maker_key,
-            description=description,
             writable=False,
         ),
     )
@@ -267,8 +241,6 @@ def enum(
     enum_type: type[IntEnum],
     *args: Any,
     options: tuple[OptionMetadata, ...] | None = None,
-    maker_key: str | None = None,
-    description: str | None = None,
     writable: bool | Callable[[Any], Any] = False,
     **kwargs: Any,
 ):
@@ -290,9 +262,6 @@ def enum(
         field,
         DatapointMetadata(
             value_kind="enum",
-            maker_reference=address,
-            maker_key=maker_key,
-            description=description,
             writable=bool(writable),
             enum=EnumMetadata(enum_type=enum_type, options=resolved_options),
         ),
@@ -321,8 +290,6 @@ def boolean(
     true_key: str = "on",
     false_label: str | None = None,
     true_label: str | None = None,
-    maker_key: str | None = None,
-    description: str | None = None,
 ):
     """Create a boolean register field with Riden metadata."""
     field = BooleanRegisterField(
@@ -336,9 +303,6 @@ def boolean(
         field,
         DatapointMetadata(
             value_kind="boolean",
-            maker_reference=address,
-            maker_key=maker_key,
-            description=description,
             writable=writable,
             boolean=BooleanMetadata(
                 false_key=false_key,
@@ -351,7 +315,7 @@ def boolean(
 
 
 class RidenComponent(Component):
-    """An RD6018 sub-system constrained to the device's readable range."""
+    """An RD60xx sub-system constrained to the device's readable range."""
 
     register_ranges = REGISTER_RANGES
 
@@ -373,7 +337,7 @@ class RidenComponent(Component):
         """Write a Riden data point.
 
         This is the public write entry point for integrations. Unlike some
-        Modbus devices the RD6018 needs no write-unlock sequence, so this
+        Modbus devices the RD60xx needs no write-unlock sequence, so this
         delegates straight to the generic component write path.
         """
         await self.write(field, value)

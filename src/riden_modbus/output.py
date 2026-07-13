@@ -19,52 +19,60 @@ class Output(RidenComponent):
 
     # Model-scaled fields, declared on the subclass output_class() builds.
     voltage_setpoint: float | None
+    """Output voltage setting (V)."""
+
     current_setpoint: float | None
+    """Output current limit setting (A)."""
+
     voltage: float | None
+    """Measured output voltage (V)."""
+
     current: float | None
+    """Measured output current (A)."""
+
     power: float | None
+    """Measured output power (W)."""
+
     over_voltage_protection: float | None
+    """Active over-voltage protection (V) — preset group M0's OVP."""
+
     over_current_protection: float | None
+    """Active over-current protection (A) — preset group M0's OCP."""
 
-    # Reported in centivolts on every model — the supplies take up to ~70 V in,
-    # which could not fit a 16-bit word at the P models' millivolt scale.
-    input_voltage = gauge(14, 0.01, signed=False, unit="V", digits=2, maker_key="V_IN")
+    input_voltage = gauge(14, 0.01, signed=False, unit="V", digits=2)
+    """Input voltage (V).
 
-    keypad_lock = boolean(
-        15,
-        writable=True,
-        maker_key="KEYPAD",
-        description="Front-panel keypad lock",
-    )
+    Reported in centivolts on every model — the supplies take up to ~70 V in,
+    which could not fit a 16-bit word at the P models' millivolt scale.
+    """
 
-    protection = enum(16, ProtectionStatus, maker_key="OVP_OCP")
-    mode = enum(17, OutputMode, maker_key="CV_CC")
+    keypad_lock = boolean(15, writable=True)
+    """Front-panel keypad lock."""
 
-    enabled = boolean(
-        18,
-        writable=True,
-        maker_key="OUTPUT",
-        description="Output on/off",
-    )
+    protection = enum(16, ProtectionStatus)
+    """Why the output tripped, if it did."""
+
+    mode = enum(17, OutputMode)
+    """Whether the output is limited by voltage or current."""
+
+    enabled = boolean(18, writable=True)
+    """Output on/off."""
 
     active_preset = integer(
-        19,
-        signed=False,
-        writable=True,
-        min_value=0,
-        max_value=9,
-        digits=0,
-        maker_key="PRESET",
-        description="Recall preset group M0-M9",
+        19, signed=False, writable=True, min_value=0, max_value=9, digits=0
     )
+    """Writing recalls preset group M0-M9 into the active setpoints."""
 
-    # Only meaningful on the RD6012P (0 = 6 A range, 1 = 12 A range); a change
-    # means the device needs re-probing, as the current scale follows it.
-    current_range = integer(20, signed=False, maker_key="I_RANGE")
+    current_range = integer(20, signed=False)
+    """Selected current range (0 = 6 A, 1 = 12 A).
+
+    Only meaningful on the RD6012P; a change means the device needs
+    re-probing, as the current scale follows it.
+    """
 
     # Sign lives in its own register: 0 = positive, 1 = negative.
-    _temperature_sign = raw_register(4, maker_key="INT_C_S")
-    _temperature_value = integer(5, signed=False, maker_key="INT_C")
+    _temperature_sign = raw_register(4)
+    _temperature_value = integer(5, signed=False)
 
     @property
     def temperature(self) -> int | None:
@@ -103,8 +111,6 @@ def output_class(profile: ModelProfile) -> type[Output]:
             min_value=0,
             max_value=profile.max_voltage,
             digits=2,
-            maker_key="V_SET",
-            description="Output voltage setting",
         )
 
         current_setpoint = gauge(
@@ -116,19 +122,13 @@ def output_class(profile: ModelProfile) -> type[Output]:
             min_value=0,
             max_value=profile.max_current,
             digits=2,
-            maker_key="I_SET",
-            description="Output current limit setting",
         )
 
-        voltage = gauge(
-            10, scaling.voltage, signed=False, unit="V", digits=2, maker_key="V_OUT"
-        )
-        current = gauge(
-            11, scaling.current, signed=False, unit="A", digits=2, maker_key="I_OUT"
-        )
+        voltage = gauge(10, scaling.voltage, signed=False, unit="V", digits=2)
+        current = gauge(11, scaling.current, signed=False, unit="A", digits=2)
 
         # 32 bits: an RD6018 tops out at 1080 W, past a single word's range.
-        power = uint32(12, scale=scaling.power, unit="W", digits=2, maker_key="P_OUT")
+        power = uint32(12, scale=scaling.power, unit="W", digits=2)
 
         # The active protection values are preset group M0 (registers 80-83).
         over_voltage_protection = gauge(
@@ -140,8 +140,6 @@ def output_class(profile: ModelProfile) -> type[Output]:
             min_value=0,
             max_value=profile.max_voltage,
             digits=2,
-            maker_key="M0_OVP",
-            description="Active over-voltage protection",
         )
 
         over_current_protection = gauge(
@@ -153,8 +151,6 @@ def output_class(profile: ModelProfile) -> type[Output]:
             min_value=0,
             max_value=profile.max_current,
             digits=2,
-            maker_key="M0_OCP",
-            description="Active over-current protection",
         )
 
     return _Output

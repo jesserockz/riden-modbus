@@ -15,9 +15,9 @@ class DeviceInformation(RidenComponent):
 
     manufacturer = "Riden"
 
-    _model_raw = integer(0, signed=False, maker_key="ID")
-    _serial_raw = uint32(1, maker_key="SN")
-    _firmware_raw = gauge(3, 0.01, signed=False, maker_key="FW")
+    _model_raw = integer(0, signed=False)
+    _serial_raw = uint32(1)
+    _firmware_raw = gauge(3, 0.01, signed=False)
 
     @property
     def model(self) -> str | None:
