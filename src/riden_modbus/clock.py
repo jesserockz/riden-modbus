@@ -4,18 +4,20 @@ from __future__ import annotations
 
 import datetime
 
-from .model import RidenComponent, integer
+from modbus_connection.model import integer
+
+from .model import RidenComponent, bounded
 
 
 class Clock(RidenComponent):
     """Device clock, exposed as native ``date`` / ``time`` / ``datetime``."""
 
-    year = integer(48, signed=False, writable=True, min_value=2000, max_value=2099)
-    month = integer(49, signed=False, writable=True, min_value=1, max_value=12)
-    day = integer(50, signed=False, writable=True, min_value=1, max_value=31)
-    hour = integer(51, signed=False, writable=True, min_value=0, max_value=23)
-    minute = integer(52, signed=False, writable=True, min_value=0, max_value=59)
-    second = integer(53, signed=False, writable=True, min_value=0, max_value=59)
+    year = integer(48, signed=False, writable=bounded(2000, 2099))
+    month = integer(49, signed=False, writable=bounded(1, 12))
+    day = integer(50, signed=False, writable=bounded(1, 31))
+    hour = integer(51, signed=False, writable=bounded(0, 23))
+    minute = integer(52, signed=False, writable=bounded(0, 59))
+    second = integer(53, signed=False, writable=bounded(0, 59))
 
     @property
     def date(self) -> datetime.date | None:

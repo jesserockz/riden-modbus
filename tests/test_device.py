@@ -277,43 +277,8 @@ async def test_construct_unsupported_model(mock_modbus_unit: MockModbusUnit) -> 
         RD60xx(mock_modbus_unit, model=52051)
 
 
-async def test_metadata(rd6018: RD60xx) -> None:
-    voltage = rd6018.output.require_metadata_for("voltage_setpoint")
-    assert voltage.writable is True
-    assert voltage.number is not None
-    assert voltage.number.max_value == 60.0
-    assert voltage.number.step == pytest.approx(0.01)
-    assert voltage.number.unit == "V"
-
-    current = rd6018.output.require_metadata_for("current_setpoint")
-    assert current.number is not None
-    assert current.number.max_value == 18.0  # RD6018 limit
-
-    enabled = rd6018.output.require_metadata_for("enabled")
-    assert enabled.value_kind == "boolean"
-    assert enabled.boolean is not None
-    assert enabled.boolean.true_key == "on"
-
-    language = rd6018.settings.require_metadata_for("language")
-    assert language.enum is not None
-    assert {option.key for option in language.enum.options} == {"english", "chinese"}
-
-    # Options fall back to the enum members when not given explicitly.
-    protection = rd6018.output.require_metadata_for("protection")
-    assert protection.enum is not None
-    assert {option.key for option in protection.enum.options} == {
-        "none",
-        "over_voltage",
-        "over_current",
-    }
-
-    backlight = rd6018.settings.require_metadata_for("backlight")
-    assert backlight.number is not None
-    assert backlight.number.step == 1  # digits=0
-
-    sign = rd6018.output.metadata_for("_temperature_sign")
-    assert sign is not None and sign.value_kind == "raw"
-
-    assert rd6018.output.metadata_for("no_such_field") is None
-    with pytest.raises(AttributeError):
-        rd6018.output.require_metadata_for("no_such_field")
+def test_fields_carry_units(rd6018: RD60xx) -> None:
+    """Units live on the modbus-connection fields themselves, not a side table."""
+    assert rd6018.output._register_fields["voltage_setpoint"].unit == "V"
+    assert rd6018.output._register_fields["current_setpoint"].unit == "A"
+    assert rd6018.battery._register_fields["charge"].unit == "Ah"

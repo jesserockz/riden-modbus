@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from modbus_connection.model import enum, integer
+
 from .enums import Language
-from .model import RidenComponent, boolean, enum, integer
-from .options import LANGUAGE_OPTIONS
+from .model import RidenComponent, boolean, bounded
 
 
 class Settings(RidenComponent):
@@ -25,10 +26,8 @@ class Settings(RidenComponent):
     logo = boolean(70, writable=True)
     """Show the logo at boot."""
 
-    language = enum(71, Language, writable=True, options=LANGUAGE_OPTIONS)
+    language = enum(71, Language, writable=True)
     """Front-panel UI language."""
 
-    backlight = integer(
-        72, signed=False, writable=True, min_value=0, max_value=5, digits=0
-    )
+    backlight = integer(72, signed=False, writable=bounded(0, 5))
     """Backlight brightness level (0-5)."""

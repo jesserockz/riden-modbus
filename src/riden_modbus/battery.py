@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from functools import cache
 
-from .model import RidenComponent, boolean, gauge, integer, raw_register, uint32
+from modbus_connection.model import gauge, integer, raw_register, uint32
+
+from .model import RidenComponent, boolean
 from .models import ModelProfile
 
 
@@ -24,10 +26,10 @@ class Battery(RidenComponent):
     active = boolean(32)
     """True while a battery is connected to the rear charging terminals."""
 
-    charge = uint32(38, scale=0.001, unit="Ah", digits=3)
+    charge = uint32(38, scale=0.001, unit="Ah")
     """Accumulated charge this session (Ah)."""
 
-    energy = uint32(40, scale=0.001, unit="Wh", digits=3)
+    energy = uint32(40, scale=0.001, unit="Wh")
     """Accumulated energy this session (Wh)."""
 
     # Sign lives in its own register: 0 = positive, 1 = negative.
@@ -49,12 +51,6 @@ def battery_class(profile: ModelProfile) -> type[Battery]:
     """Build the :class:`Battery` subclass carrying a model's scaled fields."""
 
     class _Battery(Battery):
-        voltage = gauge(
-            33,
-            profile.scaling.voltage,
-            signed=False,
-            unit="V",
-            digits=2,
-        )
+        voltage = gauge(33, profile.scaling.voltage, signed=False, unit="V")
 
     return _Battery

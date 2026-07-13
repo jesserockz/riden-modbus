@@ -6,7 +6,9 @@ sw_version, serial_number) directly on the component.
 
 from __future__ import annotations
 
-from .model import RidenComponent, gauge, integer, uint32
+from modbus_connection.model import gauge, integer, uint32
+
+from .model import RidenComponent
 from .models import model_name
 
 

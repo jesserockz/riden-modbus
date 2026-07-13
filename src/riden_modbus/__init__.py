@@ -23,13 +23,6 @@ from .clock import Clock
 from .device_info import DeviceInformation
 from .enums import Language, OutputMode, ProtectionStatus
 from .exceptions import RidenValueValidationError
-from .metadata import (
-    BooleanMetadata,
-    DatapointMetadata,
-    EnumMetadata,
-    NumberMetadata,
-    OptionMetadata,
-)
 from .models import (
     ModelProfile,
     Scaling,
@@ -44,15 +37,10 @@ from .settings import Settings
 
 __all__ = [
     "Battery",
-    "BooleanMetadata",
     "Clock",
-    "DatapointMetadata",
     "DeviceInformation",
-    "EnumMetadata",
     "Language",
     "ModelProfile",
-    "NumberMetadata",
-    "OptionMetadata",
     "Output",
     "OutputMode",
     "Preset",

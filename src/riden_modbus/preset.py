@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from functools import cache
 
-from .model import RidenComponent, gauge
+from modbus_connection.model import gauge
+
+from .model import RidenComponent, bounded
 from .models import ModelProfile
 
 
@@ -50,11 +52,8 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             scaling.voltage,
             signed=False,
             stride=4,
-            writable=True,
             unit="V",
-            min_value=0,
-            max_value=profile.max_voltage,
-            digits=2,
+            writable=bounded(0, profile.max_voltage),
         )
 
         current = gauge(
@@ -62,11 +61,8 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             scaling.current,
             signed=False,
             stride=4,
-            writable=True,
             unit="A",
-            min_value=0,
-            max_value=profile.max_current,
-            digits=2,
+            writable=bounded(0, profile.max_current),
         )
 
         over_voltage_protection = gauge(
@@ -74,11 +70,8 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             scaling.voltage,
             signed=False,
             stride=4,
-            writable=True,
             unit="V",
-            min_value=0,
-            max_value=profile.max_voltage,
-            digits=2,
+            writable=bounded(0, profile.max_voltage),
         )
 
         over_current_protection = gauge(
@@ -86,11 +79,8 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             scaling.current,
             signed=False,
             stride=4,
-            writable=True,
             unit="A",
-            min_value=0,
-            max_value=profile.max_current,
-            digits=2,
+            writable=bounded(0, profile.max_current),
         )
 
     return _Preset

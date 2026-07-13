@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from functools import cache
 
+from modbus_connection.model import enum, gauge, integer, raw_register, uint32
+
 from .enums import OutputMode, ProtectionStatus
-from .model import RidenComponent, boolean, enum, gauge, integer, raw_register, uint32
+from .model import RidenComponent, boolean, bounded
 from .models import ModelProfile
 
 
@@ -39,7 +41,7 @@ class Output(RidenComponent):
     over_current_protection: float | None
     """Active over-current protection (A) — preset group M0's OCP."""
 
-    input_voltage = gauge(14, 0.01, signed=False, unit="V", digits=2)
+    input_voltage = gauge(14, 0.01, signed=False, unit="V")
     """Input voltage (V).
 
     Reported in centivolts on every model — the supplies take up to ~70 V in,
@@ -58,9 +60,7 @@ class Output(RidenComponent):
     enabled = boolean(18, writable=True)
     """Output on/off."""
 
-    active_preset = integer(
-        19, signed=False, writable=True, min_value=0, max_value=9, digits=0
-    )
+    active_preset = integer(19, signed=False, writable=bounded(0, 9))
     """Writing recalls preset group M0-M9 into the active setpoints."""
 
     current_range = integer(20, signed=False)
@@ -106,51 +106,39 @@ def output_class(profile: ModelProfile) -> type[Output]:
             8,
             scaling.voltage,
             signed=False,
-            writable=True,
             unit="V",
-            min_value=0,
-            max_value=profile.max_voltage,
-            digits=2,
+            writable=bounded(0, profile.max_voltage),
         )
 
         current_setpoint = gauge(
             9,
             scaling.current,
             signed=False,
-            writable=True,
             unit="A",
-            min_value=0,
-            max_value=profile.max_current,
-            digits=2,
+            writable=bounded(0, profile.max_current),
         )
 
-        voltage = gauge(10, scaling.voltage, signed=False, unit="V", digits=2)
-        current = gauge(11, scaling.current, signed=False, unit="A", digits=2)
+        voltage = gauge(10, scaling.voltage, signed=False, unit="V")
+        current = gauge(11, scaling.current, signed=False, unit="A")
 
         # 32 bits: an RD6018 tops out at 1080 W, past a single word's range.
-        power = uint32(12, scale=scaling.power, unit="W", digits=2)
+        power = uint32(12, scale=scaling.power, unit="W")
 
         # The active protection values are preset group M0 (registers 80-83).
         over_voltage_protection = gauge(
             82,
             scaling.voltage,
             signed=False,
-            writable=True,
             unit="V",
-            min_value=0,
-            max_value=profile.max_voltage,
-            digits=2,
+            writable=bounded(0, profile.max_voltage),
         )
 
         over_current_protection = gauge(
             83,
             scaling.current,
             signed=False,
-            writable=True,
             unit="A",
-            min_value=0,
-            max_value=profile.max_current,
-            digits=2,
+            writable=bounded(0, profile.max_current),
         )
 
     return _Output
