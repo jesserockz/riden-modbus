@@ -106,10 +106,6 @@ async def test_model_limits_apply_to_writes(mock_modbus_unit: MockModbusUnit) ->
     raw = (await mock_modbus_unit.read_holding_registers(9, 1))[0]
     assert raw == 5000  # written in milliamps
 
-    metadata = device.output.require_metadata_for("current_setpoint")
-    assert metadata.number is not None
-    assert metadata.number.max_value == 6.0
-
 
 def test_component_classes_are_cached(rd6018: RD60xx) -> None:
     """Two devices of one model share the generated component classes."""

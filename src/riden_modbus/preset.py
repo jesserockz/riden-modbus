@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from functools import cache
 
-from .model import RidenComponent, gauge
+from modbus_connection.model import gauge
+
+from .model import RidenComponent, bounded
 from .models import ModelProfile
 
 
@@ -22,9 +24,16 @@ class Preset(RidenComponent):
 
     # Model-scaled fields, declared on the subclass preset_class() builds.
     voltage: float | None
+    """Preset output voltage (V)."""
+
     current: float | None
+    """Preset output current limit (A)."""
+
     over_voltage_protection: float | None
+    """Preset over-voltage protection (V)."""
+
     over_current_protection: float | None
+    """Preset over-current protection (A)."""
 
     @property
     def number(self) -> int:
@@ -43,13 +52,8 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             scaling.voltage,
             signed=False,
             stride=4,
-            writable=True,
             unit="V",
-            min_value=0,
-            max_value=profile.max_voltage,
-            digits=2,
-            maker_key="M_V",
-            description="Preset output voltage",
+            writable=bounded(0, profile.max_voltage),
         )
 
         current = gauge(
@@ -57,13 +61,8 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             scaling.current,
             signed=False,
             stride=4,
-            writable=True,
             unit="A",
-            min_value=0,
-            max_value=profile.max_current,
-            digits=2,
-            maker_key="M_I",
-            description="Preset output current limit",
+            writable=bounded(0, profile.max_current),
         )
 
         over_voltage_protection = gauge(
@@ -71,13 +70,8 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             scaling.voltage,
             signed=False,
             stride=4,
-            writable=True,
             unit="V",
-            min_value=0,
-            max_value=profile.max_voltage,
-            digits=2,
-            maker_key="M_OVP",
-            description="Preset over-voltage protection",
+            writable=bounded(0, profile.max_voltage),
         )
 
         over_current_protection = gauge(
@@ -85,13 +79,8 @@ def preset_class(profile: ModelProfile) -> type[Preset]:
             scaling.current,
             signed=False,
             stride=4,
-            writable=True,
             unit="A",
-            min_value=0,
-            max_value=profile.max_current,
-            digits=2,
-            maker_key="M_OCP",
-            description="Preset over-current protection",
+            writable=bounded(0, profile.max_current),
         )
 
     return _Preset

@@ -6,7 +6,9 @@ sw_version, serial_number) directly on the component.
 
 from __future__ import annotations
 
-from .model import RidenComponent, gauge, integer, uint32
+from modbus_connection.model import gauge, integer, uint32
+
+from .model import RidenComponent
 from .models import model_name
 
 
@@ -15,9 +17,9 @@ class DeviceInformation(RidenComponent):
 
     manufacturer = "Riden"
 
-    _model_raw = integer(0, signed=False, maker_key="ID")
-    _serial_raw = uint32(1, maker_key="SN")
-    _firmware_raw = gauge(3, 0.01, signed=False, maker_key="FW")
+    _model_raw = integer(0, signed=False)
+    _serial_raw = uint32(1)
+    _firmware_raw = gauge(3, 0.01, signed=False)
 
     @property
     def model(self) -> str | None:
