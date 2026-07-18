@@ -3,13 +3,13 @@ tag-template: "$RESOLVED_VERSION"
 
 categories:
   - title: "⚠️ Breaking changes"
-    labels: ["breaking-change"]
+    labels: ["breaking-change", "major"]
     semver-increment: "major"
   - title: "✨ New features"
-    labels: ["enhancement", "new-feature"]
+    labels: ["enhancement", "new-feature", "minor"]
     semver-increment: "minor"
   - title: "🐛 Bug fixes"
-    labels: ["bugfix", "bug"]
+    labels: ["bugfix", "bug", "patch"]
     semver-increment: "patch"
   - title: "⬆️ Dependencies"
     labels: ["dependencies"]
