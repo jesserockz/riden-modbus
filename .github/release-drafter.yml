@@ -4,20 +4,18 @@ tag-template: "$RESOLVED_VERSION"
 categories:
   - title: "⚠️ Breaking changes"
     labels: ["breaking-change"]
+    semver-increment: "major"
   - title: "✨ New features"
     labels: ["enhancement", "new-feature"]
+    semver-increment: "minor"
   - title: "🐛 Bug fixes"
     labels: ["bugfix", "bug"]
+    semver-increment: "patch"
   - title: "⬆️ Dependencies"
     labels: ["dependencies"]
+    semver-increment: "patch"
 
 version-resolver:
-  major:
-    labels: ["breaking-change"]
-  minor:
-    labels: ["enhancement", "new-feature"]
-  patch:
-    labels: ["bugfix", "bug", "dependencies"]
   default: patch
 
 change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
