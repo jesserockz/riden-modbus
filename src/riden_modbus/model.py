@@ -52,9 +52,6 @@ class BooleanRegisterField(NumberField[bool]):
     def decode(self, words: list[int], scale_exponent: int | None = None) -> Any:
         return bool(super().decode(words, scale_exponent))
 
-    def encode(self, value: Any) -> list[int]:
-        return super().encode(int(bool(value)))
-
 
 def boolean(
     address: int,
