@@ -93,7 +93,7 @@ jobs:
             echo "::error::Could not read the draft release body."
             exit 1
           fi
-          printf '%s' "$body" | python3 -c '
+          new_body=$(printf '%s' "$body" | python3 -c '
           import re
           import sys
 
@@ -105,9 +105,11 @@ jobs:
               flags=re.S,
           )
           sys.stdout.write(ready)
-          ' > body.txt
-          gh api -X PATCH "/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}" \
-            -f tag_name="$TAG" \
-            -f name="$TAG" \
-            -f draft=true \
-            -F body=@body.txt > /dev/null
+          ')
+          gh api "/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}" \
+            --method PATCH \
+            --field "body=${new_body}" \
+            --field "tag_name=${TAG}" \
+            --field "name=${TAG}" \
+            --field "draft=true" \
+            --silent
