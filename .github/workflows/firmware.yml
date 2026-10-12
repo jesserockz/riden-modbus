@@ -5,17 +5,119 @@ on:
     branches: [main]
     paths:
       - esphome/**
+      - script/firmware_version.py
       - .github/workflows/firmware.yml
   pull_request:
     paths:
       - esphome/**
+      - script/firmware_version.py
       - .github/workflows/firmware.yml
+  schedule:
+    # Weekly check for a new ESPHome release; the build is skipped when the
+    # published firmware was already built with the latest ESPHome.
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+# The release counter is read from the published firmware, so deploying runs
+# must not overlap or two of them could claim the same version.
+concurrency:
+  group: firmware-${{ github.event_name == 'pull_request' && github.ref || 'deploy' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      build: ${{ steps.decide.outputs.build }}
+      esphome-version: ${{ steps.esphome.outputs.version }}
+      firmware-version: ${{ steps.firmware.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Resolve the latest ESPHome release
+        id: esphome
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! version=$(gh api repos/esphome/esphome/releases/latest --jq .tag_name); then
+            echo "::error::Could not resolve the latest ESPHome release."
+            exit 1
+          fi
+          if [ -z "$version" ]; then
+            echo "::error::The latest ESPHome release has no tag."
+            exit 1
+          fi
+          echo "Latest ESPHome: ${version}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+      - name: Read the published firmware
+        id: published
+        # A 404 means nothing (or a pre-calver site without the ESPHome
+        # version file) is published yet; any other failure stops the run so
+        # the release counter can never be reset by a flaky fetch.
+        run: |
+          base="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}/firmware"
+          fetch() {
+            local status
+            if ! status=$(curl -sSL -o "$2" -w '%{http_code}' "${base}/$1"); then
+              echo "::error::Could not fetch ${base}/$1."
+              exit 1
+            fi
+            case "$status" in
+              200) ;;
+              404) : > "$2" ;;
+              *)
+                echo "::error::Fetching ${base}/$1 returned HTTP ${status}."
+                exit 1
+                ;;
+            esac
+          }
+          fetch manifest.json manifest.json
+          fetch esphome-version.txt esphome-version.txt
+          version=""
+          if [ -s manifest.json ]; then
+            if ! version=$(jq -er .version manifest.json); then
+              echo "::error::The published manifest.json has no version."
+              exit 1
+            fi
+          fi
+          esphome=$(tr -d '[:space:]' < esphome-version.txt)
+          echo "Published firmware: ${version:-none} (ESPHome ${esphome:-unknown})"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "esphome-version=${esphome}" >> "$GITHUB_OUTPUT"
+      - name: Decide whether to build
+        id: decide
+        env:
+          EVENT: ${{ github.event_name }}
+          LATEST: ${{ steps.esphome.outputs.version }}
+          PUBLISHED: ${{ steps.published.outputs.esphome-version }}
+        # Only the weekly run is conditional; pushes, pull requests and manual
+        # runs always build.
+        run: |
+          if [ "$EVENT" = "schedule" ] && [ "$LATEST" = "$PUBLISHED" ]; then
+            echo "Published firmware already uses ESPHome ${LATEST}; skipping the build."
+            echo "build=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "build=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Compute the firmware version
+        id: firmware
+        if: steps.decide.outputs.build == 'true'
+        env:
+          PREVIOUS: ${{ steps.published.outputs.version }}
+        run: |
+          if ! version=$(python3 script/firmware_version.py --previous "$PREVIOUS"); then
+            echo "::error::Could not compute the firmware version."
+            exit 1
+          fi
+          echo "Firmware version: ${version}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: prepare
+    if: needs.prepare.outputs.build == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,11 +127,18 @@ jobs:
         uses: esphome/build-action@82ec6bded4e0998e1cda757680e5f1ac85825cfd # v7.4.0
         with:
           yaml-file: esphome/rd60xx-serial-proxy.yaml
+          version: ${{ needs.prepare.outputs.esphome-version }}
           complete-manifest: true
+          substitutions: |
+            firmware_version=${{ needs.prepare.outputs.firmware-version }}
       - name: Assemble site
+        env:
+          ESPHOME_VERSION: ${{ needs.prepare.outputs.esphome-version }}
         run: |
           mkdir -p site/firmware
           mv "${{ steps.esphome-build.outputs.name }}"/* site/firmware/
+          # Lets the weekly run tell whether ESPHome has moved on since.
+          echo "$ESPHOME_VERSION" > site/firmware/esphome-version.txt
           cp esphome/static/index.html site/
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
@@ -37,7 +146,7 @@ jobs:
           path: site
 
   publish:
-    if: github.event_name == 'push'
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     permissions:

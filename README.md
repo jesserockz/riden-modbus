@@ -125,6 +125,8 @@ The firmware contains no credentials, so prebuilt images can be flashed as-is: W
 
 CI compiles the firmware on every pull request that touches it, and pushes to `main` publish the built image to GitHub Pages with a browser-based [ESP Web Tools](https://esphome.github.io/esp-web-tools/) installer, served at `https://jesserockz.github.io/riden-modbus/`.
 
+Published firmware is built with the latest ESPHome release and versioned by calendar as `YY.M.N`, where `N` counts releases within the month (`26.10.1` is the first release of October 2026). A weekly run rebuilds and republishes the firmware whenever a new ESPHome release has come out since the published build.
+
 ## Command-line query tool
 
 The repository contains `script/query.py` for querying a power supply without Home Assistant. It probes the model automatically.
