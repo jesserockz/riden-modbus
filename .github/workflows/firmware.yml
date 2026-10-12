@@ -124,7 +124,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Build firmware
         id: esphome-build
-        uses: esphome/build-action@82ec6bded4e0998e1cda757680e5f1ac85825cfd # v7.4.0
+        uses: esphome/build-action@ae5408cdbc4f70692bf8e345c4982bca05a93667 # v8.1.0
         with:
           yaml-file: esphome/rd60xx-serial-proxy.yaml
           version: ${{ needs.prepare.outputs.esphome-version }}
