@@ -54,14 +54,14 @@ Example using `tmodbus` and transparent RTU over TCP:
 ```python
 import asyncio
 
-from modbus_connection.tmodbus import connect_tcp
+from modbus_connection.tmodbus import connect_serial
 from riden_modbus import RD60xx
 
 
 async def main() -> None:
-    connection = await connect_tcp(
-        "192.168.1.50",
-        port=502,
+    # RTU framing over a socket is a serial link on a socket:// device.
+    connection = await connect_serial(
+        "socket://192.168.1.50:502",
         framer="rtu",
     )
 

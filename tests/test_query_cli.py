@@ -72,7 +72,15 @@ async def test_open_picks_backend(monkeypatch: pytest.MonkeyPatch) -> None:
 
     args = query._parse_args(["tcp", "1.2.3.4", "--framer", "socket"])
     assert await query._open(args) == "tcp-connection"
-    assert opened[-1] == ("1.2.3.4", {"port": 502, "framer": "socket"})
+    assert opened[-1] == ("1.2.3.4", {"port": 502})
+
+    args = query._parse_args(["tcp", "1.2.3.4"])
+    assert await query._open(args) == "serial-connection"
+    assert opened[-1] == ("socket://1.2.3.4:502", {"framer": "rtu"})
+
+    args = query._parse_args(["tcp", "fe80::1", "--port", "1502"])
+    assert await query._open(args) == "serial-connection"
+    assert opened[-1] == ("socket://[fe80::1]:1502", {"framer": "rtu"})
 
     args = query._parse_args(["serial", "/dev/ttyUSB0", "--baudrate", "9600"])
     assert await query._open(args) == "serial-connection"

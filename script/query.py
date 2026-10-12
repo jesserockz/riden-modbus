@@ -77,6 +77,13 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
+def _socket_device(host: str, port: int) -> str:
+    """Serial-style ``socket://`` device for a host, bracketing IPv6 literals."""
+    if ":" in host:
+        host = f"[{host}]"
+    return f"socket://{host}:{port}"
+
+
 async def _open(args: argparse.Namespace) -> ModbusConnection:
     # Imported here so the module loads (and --help works) without a backend.
     from modbus_connection.pymodbus import connect_serial, connect_tcp
@@ -89,7 +96,10 @@ async def _open(args: argparse.Namespace) -> ModbusConnection:
             stopbits=args.stopbits,
             bytesize=args.bytesize,
         )
-    return await connect_tcp(args.host, port=args.port, framer=args.framer)
+    if args.framer == "rtu":
+        # RTU over a socket is a serial link: use a socket:// serial device.
+        return await connect_serial(_socket_device(args.host, args.port), framer="rtu")
+    return await connect_tcp(args.host, port=args.port)
 
 
 class _CountingUnit:
